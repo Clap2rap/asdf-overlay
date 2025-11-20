@@ -91,7 +91,7 @@ async fn run(server: NamedPipeServer) -> anyhow::Result<()> {
 
                 WindowRequest::BlockInput(cmd) => {
                     backend.block_input(cmd.block);
-                    backend.block_game_input(cmd.block);
+                    backend.block_gamepad_input(cmd.block);
                 }
 
                 WindowRequest::SetBlockingCursor(cmd) => {
