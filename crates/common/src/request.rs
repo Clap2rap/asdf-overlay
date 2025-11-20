@@ -126,6 +126,7 @@ impl_WindowRequestItem!(ListenInput);
 /// Block input events from reaching window and listen all input events
 pub struct BlockInput {
     /// Whether to block input events from reaching to window.
+    /// When true, blocks both raw input (mouse/keyboard) and gamepad input (DirectInput/XInput).
     pub block: bool,
 }
 impl_WindowRequestItem!(BlockInput);

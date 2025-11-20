@@ -182,7 +182,7 @@ export class Overlay {
   /**
    * Block window input and listen them
    * @param id target window id
-   * @param block set true to block input, false to release
+   * @param block set true to block all input (raw input and gamepad), false to release
    */
   async blockInput(
     id: number,

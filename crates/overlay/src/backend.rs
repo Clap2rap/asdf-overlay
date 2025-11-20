@@ -290,4 +290,10 @@ impl WindowBackend {
             _ = PostMessageA(Some(HWND(self.id as _)), msg::WM_NULL, WPARAM(0), LPARAM(0));
         }
     }
+
+    /// Block all game controller inputs (DirectInput + XInput)
+    pub fn block_game_input(&self, block: bool) {
+        crate::hook::set_dinput_blocking(block);
+        crate::hook::set_xinput_blocking(block);
+    }
 }
