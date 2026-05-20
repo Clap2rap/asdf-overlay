@@ -3,7 +3,7 @@ pub(crate) mod proc;
 
 use super::WindowBackend;
 use asdf_overlay_common::cursor::Cursor;
-use windows::Win32::Foundation::RECT;
+use windows::Win32::Foundation::{POINT, RECT};
 
 pub(crate) struct WindowProcData {
     pub position: (i32, i32),
@@ -64,6 +64,7 @@ impl WindowProcData {
 pub(crate) struct InputBlockData {
     pub clip_cursor: Option<RECT>,
     pub old_ime_cx: usize,
+    pub last_cursor_pos: POINT,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]

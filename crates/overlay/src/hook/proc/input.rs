@@ -202,11 +202,10 @@ extern "system" fn hooked_get_clip_cursor(lprect: *mut RECT) -> BOOL {
 
 #[tracing::instrument]
 extern "system" fn hooked_get_cursor_pos(lppoint: *mut POINT) -> BOOL {
-    if foreground_hwnd_input_blocked() {
-        // Return a fixed position instead of the real cursor position to prevent games from tracking mouse movement
+    if let Some(pos) = active_hwnd_with(|data| data.last_cursor_pos) {
         if !lppoint.is_null() {
             unsafe {
-                lppoint.write(POINT { x: 0, y: 0 });
+                lppoint.write(pos);
             }
         }
         return BOOL(1);
@@ -217,11 +216,10 @@ extern "system" fn hooked_get_cursor_pos(lppoint: *mut POINT) -> BOOL {
 
 #[tracing::instrument]
 extern "system" fn hooked_get_physical_cursor_pos(lppoint: *mut POINT) -> BOOL {
-    if foreground_hwnd_input_blocked() {
-        // Return a fixed position instead of the real cursor position to prevent games from tracking mouse movement
+    if let Some(pos) = active_hwnd_with(|data| data.last_cursor_pos) {
         if !lppoint.is_null() {
             unsafe {
-                lppoint.write(POINT { x: 0, y: 0 });
+                lppoint.write(pos);
             }
         }
         return BOOL(1);

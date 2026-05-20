@@ -235,6 +235,10 @@ fn process_wnd_proc(
                     lparam,
                     CursorEvent::Move,
                 ));
+
+                if proc.input_blocking() {
+                    return Some(LRESULT(0));
+                }
             }
         }
 

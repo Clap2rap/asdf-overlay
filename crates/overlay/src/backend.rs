@@ -19,7 +19,7 @@ use parking_lot::Mutex;
 use tracing::trace;
 use window::proc::hooked_wnd_proc;
 use windows::Win32::{
-    Foundation::{HWND, LPARAM, RECT, WPARAM},
+    Foundation::{HWND, LPARAM, POINT, RECT, WPARAM},
     Graphics::Dxgi::IDXGIAdapter,
     UI::{
         Input::{
@@ -27,7 +27,7 @@ use windows::Win32::{
             KeyboardAndMouse::{GetCapture, ReleaseCapture, SetFocus},
         },
         WindowsAndMessaging::{
-            self as msg, ClipCursor, DefWindowProcA, GWLP_WNDPROC, GetClipCursor, GetSystemMetrics,
+            self as msg, ClipCursor, DefWindowProcA, GWLP_WNDPROC, GetClipCursor, GetCursorPos, GetSystemMetrics,
             PostMessageA, SM_CXVIRTUALSCREEN, SM_CYVIRTUALSCREEN, SetCursor, SetWindowLongPtrA,
             ShowCursor, WNDPROC,
         },
@@ -244,6 +244,13 @@ impl WindowBackend {
                 let old_ime_cx =
                     ImmAssociateContext(HWND(backend.id as _), ImmCreateContext()).0 as usize;
 
+                // Save last cursor position before blocking
+                let last_cursor_pos = {
+                    let mut pt = POINT::default();
+                    _ = GetCursorPos(&mut pt);
+                    pt
+                };
+
                 // give focus to target window
                 _ = SetFocus(Some(HWND(backend.id as _)));
 
@@ -257,6 +264,7 @@ impl WindowBackend {
                 backend.proc.lock().blocking_state = Some(InputBlockData {
                     clip_cursor,
                     old_ime_cx,
+                    last_cursor_pos,
                 });
             });
         } else {
